@@ -1,7 +1,10 @@
-import { Http } from '@angular/http'
-import { Injectable } from '@angular/core'
-import { Oferta } from './shared/oferta.model'
-import { URL_API } from './app.api'
+import { Http, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Oferta } from './shared/oferta.model';
+import { URL_API } from './app.api';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/retry';
 
 @Injectable()
 export class OfertasService {
@@ -62,19 +65,19 @@ export class OfertasService {
     public getOfertas(): Promise<Oferta[]> {
         return this.http.get(`${URL_API}/ofertas?destaque=true`)
             .toPromise()
-            .then((resposta: any) => resposta.json())
+            .then((resposta: Response) => resposta.json())
     }
 
     public getOfertasPorCategoria(categoria: string): Promise<Oferta[]> {
         return this.http.get(`${URL_API}/ofertas?categoria=${categoria}`)
             .toPromise()
-            .then((resposta: any) => resposta.json())
+            .then((resposta: Response) => resposta.json())
     }
 
     public getOfertaPorId(id: number): Promise<Oferta> {
         return this.http.get(`${URL_API}/ofertas?id=${id}`)
             .toPromise()
-            .then((resposta: any) => {
+            .then((resposta: Response) => {
                 return resposta.json()[0]
             })
     }
@@ -82,7 +85,7 @@ export class OfertasService {
     public getComoUsarOfertaPorId(id: number): Promise<String> {
         return this.http.get(`${URL_API}/como-usar?id=${id}`)
             .toPromise()
-            .then((resposta: any) => {
+            .then((resposta: Response) => {
                 return resposta.json()[0].descricao
             })
     }
@@ -90,34 +93,14 @@ export class OfertasService {
     public getOndeFicaOfertaPorId(id: number): Promise<String> {
         return this.http.get(`${URL_API}/onde-fica?id=${id}`)
             .toPromise()
-            .then((resposta: any) => {
+            .then((resposta: Response) => {
                 return resposta.json()[0].descricao
             })
     }
 
-    // public getOfertas2(): Promise<Oferta[]> {
-    //     return new Promise((resolve, reject) => {
-    //         //algum tipo de processamento que ao finalizar chama a fun. resolve ou a função reject.
-    //         let deuCerto = true
-    //         if (deuCerto) {
-    //             setTimeout(() => resolve(this.ofertas), 3000)
-    //         } else {
-    //             reject({ codigoErro: 404, mensagemErro: 'Servidor não encontrado' })
-    //         }
-    //     })
-    //     .then((ofertas: Oferta[]) => {
-    //         console.log('Primeiro then')
-    //         return ofertas
-    //     })
-    //     .then((ofertas: Oferta[]) => {
-    //         console.log('Segundo then')
-    //         return new Promise((resolve2, reject2) => {
-    //             setTimeout(() => resolve2(ofertas) , 3000)
-    //         })
-    //     })
-    //     .then((ofertas: Oferta[]) => {
-    //         console.log('Terceiro then executado após 3 segundos pq estava aguardando uma promisse ser resolvida')
-    //         return ofertas
-    //     })
-    // }
+    public pesquisarOfertas(termo: string): Observable<Oferta[]> {
+        return this.http.get(`${URL_API}/ofertas?descricao_oferta_like=${termo}`)
+            .retry(10)
+            .map((resposta: Response) => resposta.json())
+    }
 }
