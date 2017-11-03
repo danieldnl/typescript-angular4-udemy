@@ -25,7 +25,6 @@ export class TopoComponent implements OnInit {
       .debounceTime(1000) //executa a ação do swirchMap após 1 segundo
       .distinctUntilChanged()
       .switchMap((termo: string) => {
-        console.log('requisica http para a api')
         if (termo.trim() === '') {
           //retornar um Obsevable de array de Ofertas vazio
           return Observable.of<Oferta[]>([])
@@ -33,19 +32,16 @@ export class TopoComponent implements OnInit {
         return this.ofertasService.pesquisarOfertas(termo)
       })
       .catch((err: any) => {
-        console.log(err)
         return Observable.of<Oferta[]>([])
       })
-
-    this.ofertas.subscribe((ofertas: Oferta[]) => {
-      console.log(ofertas)
-      this.ofertas2 = ofertas
-    })
   }
 
   public pesquisar(termo: string): void {
-    console.log('keyup caracter: ', termo)
     this.subjectPesquisa.next(termo)
+  }
+
+  public limparPesquisa(): void {
+    this.subjectPesquisa.next('')
   }
 
 }
