@@ -213,6 +213,20 @@
       "complemento": "301",
       "formaPagamento": "dinheiro",
       "id": 4
+    },
+    {
+      "endereco": "timoteo",
+      "numero": "50",
+      "complemento": "601",
+      "formaPagamento": "dinheiro",
+      "id": 5
+    },
+    {
+      "endereco": "vinte jardim",
+      "numero": "50",
+      "complemento": "362",
+      "formaPagamento": "dinheiro",
+      "id": 6
     }
   ]
 }
